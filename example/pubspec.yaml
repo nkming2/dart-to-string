@@ -1,0 +1,16 @@
+name: to_string_example
+description: A starting point for Dart libraries or applications.
+version: 1.0.0
+publish_to: none
+# homepage: https://www.example.com
+
+environment:
+  sdk: '>=2.18.5 <3.0.0'
+
+dependencies:
+  to_string:
+    path: ../
+
+dev_dependencies:
+  build_runner: ^2.3.2
+  lints: ^2.0.0
