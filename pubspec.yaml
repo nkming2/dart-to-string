@@ -4,7 +4,7 @@ version: 1.0.0
 homepage: https://gitlab.com/nkming2/dart-to-string
 
 environment:
-  sdk: '>=2.18.5 <3.0.0'
+  sdk: '>=2.17.0 <3.0.0'
 
 dependencies:
   analyzer: '>=4.0.0'
