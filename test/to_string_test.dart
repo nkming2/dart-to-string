@@ -128,5 +128,15 @@ extension _\$FormatDoubleToString on FormatDouble {
 }
 """));
     });
+
+    test("getter", () async {
+      await expectGen("Getter", completion("""
+extension _\$GetterToString on Getter {
+  String _\$toString() {
+    return "Getter {abc: \$abc}";
+  }
+}
+"""));
+    });
   });
 }

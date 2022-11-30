@@ -42,10 +42,8 @@ extension _\$${clazz.name}ToString on ${clazz.name} {
       final parent = clazz.supertype!.element2;
       data.addAll(_getFields(parent as ClassElement, annotation));
     }
-    for (final f in clazz.fields.where((f) =>
-        !f.isStatic &&
-        !TypeChecker.fromRuntime(Ignore).hasAnnotationOf(f) &&
-        (!annotation.read("ignorePrivate").boolValue || !f.isPrivate))) {
+    for (final f
+        in clazz.fields.where((f) => _shouldIncludeField(f, annotation))) {
       final String value;
       if (TypeChecker.fromRuntime(Format).hasAnnotationOf(f)) {
         final annotation =
@@ -65,6 +63,26 @@ extension _\$${clazz.name}ToString on ${clazz.name} {
       data[f.name] = value;
     }
     return data;
+  }
+
+  bool _shouldIncludeField(FieldElement field, ConstantReader annotation) {
+    if (field.isStatic) {
+      // ignore static fields
+      return false;
+    }
+    if (TypeChecker.fromRuntime(Ignore).hasAnnotationOf(field)) {
+      // ignore fields annotated by [Ignore]
+      return false;
+    }
+    if (annotation.read("ignorePrivate").boolValue && field.isPrivate) {
+      // ignore private fields if so configured
+      return false;
+    }
+    if (field.isSynthetic) {
+      // skip getters
+      return false;
+    }
+    return true;
   }
 
   String? _getFieldFormatString(FieldElement field) {

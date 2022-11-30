@@ -79,3 +79,9 @@ class FormatDouble {
   @Format(r"${$?.toStringAsFixed(1)}")
   final double abc = 1.23456789;
 }
+
+@toString
+class Getter {
+  final abc = 1;
+  int get def => 1;
+}
