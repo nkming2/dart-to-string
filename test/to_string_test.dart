@@ -138,5 +138,79 @@ extension _\$GetterToString on Getter {
 }
 """));
     });
+
+    group("yaml options", () {
+      test("name mapping", () async {
+        final generator = ToStringGenerator(
+          configFormatStringNameMapping: {
+            "List": r"${$?.first}",
+          },
+        );
+        Future<void> expectGen(String name, Matcher matcher) async =>
+            expectGenerateNamed(await tester, name, generator, matcher);
+
+        await expectGen("FormatYamlName", completion("""
+extension _\$FormatYamlNameToString on FormatYamlName {
+  String _\$toString() {
+    return "FormatYamlName {abc: \${abc.first}}";
+  }
+}
+"""));
+      });
+
+      test("url mapping", () async {
+        final generator = ToStringGenerator(
+          configFormatStringUrlMapping: {
+            "dart:core#List": r"${$?.first}",
+          },
+        );
+        Future<void> expectGen(String name, Matcher matcher) async =>
+            expectGenerateNamed(await tester, name, generator, matcher);
+
+        await expectGen("FormatYamlUrl", completion("""
+extension _\$FormatYamlUrlToString on FormatYamlUrl {
+  String _\$toString() {
+    return "FormatYamlUrl {abc: \${abc.first}}";
+  }
+}
+"""));
+      });
+
+      test("name mapping (nullable)", () async {
+        final generator = ToStringGenerator(
+          configFormatStringNameMapping: {
+            "List": r"${$?.first}",
+          },
+        );
+        Future<void> expectGen(String name, Matcher matcher) async =>
+            expectGenerateNamed(await tester, name, generator, matcher);
+
+        await expectGen("FormatYamlNameNull", completion("""
+extension _\$FormatYamlNameNullToString on FormatYamlNameNull {
+  String _\$toString() {
+    return "FormatYamlNameNull {abc: \${abc == null ? null : "\${abc!.first}"}}";
+  }
+}
+"""));
+      });
+
+      test("url mapping (nullable)", () async {
+        final generator = ToStringGenerator(
+          configFormatStringUrlMapping: {
+            "dart:core#List": r"${$?.first}",
+          },
+        );
+        Future<void> expectGen(String name, Matcher matcher) async =>
+            expectGenerateNamed(await tester, name, generator, matcher);
+
+        await expectGen("FormatYamlUrlNull", completion("""
+extension _\$FormatYamlUrlNullToString on FormatYamlUrlNull {
+  String _\$toString() {
+    return "FormatYamlUrlNull {abc: \${abc == null ? null : "\${abc!.first}"}}";
+  }
+}
+"""));
+      });
+    });
   });
 }

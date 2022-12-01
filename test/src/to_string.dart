@@ -85,3 +85,23 @@ class Getter {
   final abc = 1;
   int get def => 1;
 }
+
+@toString
+class FormatYamlName {
+  final abc = <int>[];
+}
+
+@toString
+class FormatYamlUrl {
+  final abc = <int>[];
+}
+
+@toString
+class FormatYamlNameNull {
+  final List<int>? abc = null;
+}
+
+@toString
+class FormatYamlUrlNull {
+  final List<int>? abc = null;
+}

@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:build/build.dart';
 import 'package:collection/collection.dart';
 import 'package:source_gen/source_gen.dart';
@@ -44,23 +45,11 @@ extension _\$${clazz.name}ToString on ${clazz.name} {
     }
     for (final f
         in clazz.fields.where((f) => _shouldIncludeField(f, annotation))) {
-      final String value;
-      if (TypeChecker.fromRuntime(Format).hasAnnotationOf(f)) {
-        final annotation =
-            TypeChecker.fromRuntime(Format).annotationsOf(f).first;
-        final formatString =
-            annotation.getField("formatString")!.toStringValue()!;
-        value = _applyFormatString(formatString, f);
-      } else {
-        final formatString = _getFieldFormatString(f);
-        if (formatString != null) {
-          value = _applyFormatString(formatString, f);
-        } else {
-          // ignore: prefer_interpolation_to_compose_strings
-          value = r"$" + f.name;
-        }
-      }
-      data[f.name] = value;
+      final meta = _FieldMetaBuilder(
+        configFormatStringNameMapping: configFormatStringNameMapping,
+        configFormatStringUrlMapping: configFormatStringUrlMapping,
+      ).build(f);
+      data[f.name] = _applyFormatString(meta, f);
     }
     return data;
   }
@@ -85,6 +74,77 @@ extension _\$${clazz.name}ToString on ${clazz.name} {
     return true;
   }
 
+  String _applyFormatString(_FieldMeta meta, FieldElement field) {
+    if (meta.formatString == null) {
+      return r"$" + field.name;
+    } else {
+      if (meta.isNullable) {
+        final formatted =
+            meta.formatString!.replaceAll("\$?", "${field.name}!");
+        return "\${${field.name} == null ? null : \"$formatted\"}";
+      } else {
+        return meta.formatString!.replaceAll("\$?", field.name);
+      }
+    }
+  }
+
+  final Map<String, String>? configFormatStringNameMapping;
+  final Map<String, String>? configFormatStringUrlMapping;
+}
+
+class _FieldMeta {
+  const _FieldMeta({
+    required this.isNullable,
+    this.formatString,
+  });
+
+  _FieldMeta copyWith({
+    bool? isNullable,
+    String? formatString,
+  }) =>
+      _FieldMeta(
+        isNullable: isNullable ?? this.isNullable,
+        formatString: formatString ?? this.formatString,
+      );
+
+  final bool isNullable;
+  final String? formatString;
+}
+
+class _FieldMetaBuilder {
+  _FieldMetaBuilder({
+    this.configFormatStringNameMapping,
+    this.configFormatStringUrlMapping,
+  });
+
+  _FieldMeta build(FieldElement field) {
+    _parseNullable(field);
+    _parseFormatString(field);
+    return _FieldMeta(
+      isNullable: _isNullable,
+      formatString: _formatString,
+    );
+  }
+
+  void _parseNullable(FieldElement field) {
+    _isNullable = field.type.nullabilitySuffix == NullabilitySuffix.question;
+  }
+
+  void _parseFormatString(FieldElement field) {
+    if (TypeChecker.fromRuntime(Format).hasAnnotationOf(field)) {
+      final annotation =
+          TypeChecker.fromRuntime(Format).annotationsOf(field).first;
+      final formatString =
+          annotation.getField("formatString")!.toStringValue()!;
+      _formatString = formatString;
+    } else {
+      final formatString = _getFieldFormatString(field);
+      if (formatString != null) {
+        _formatString = formatString;
+      }
+    }
+  }
+
   String? _getFieldFormatString(FieldElement field) {
     var formatString = configFormatStringUrlMapping?.entries
         .firstWhereOrNull(
@@ -104,10 +164,9 @@ extension _\$${clazz.name}ToString on ${clazz.name} {
     return null;
   }
 
-  String _applyFormatString(String format, FieldElement field) {
-    return format.replaceAll("\$?", field.name);
-  }
-
   final Map<String, String>? configFormatStringNameMapping;
   final Map<String, String>? configFormatStringUrlMapping;
+
+  late bool _isNullable;
+  String? _formatString;
 }
