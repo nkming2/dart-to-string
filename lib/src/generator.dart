@@ -5,7 +5,7 @@ import 'package:source_gen/source_gen.dart';
 import 'package:to_string/src/annotations.dart';
 
 class ToStringGenerator extends GeneratorForAnnotation<ToString> {
-  ToStringGenerator({
+  const ToStringGenerator({
     this.configFormatStringNameMapping,
     this.configFormatStringUrlMapping,
   });
