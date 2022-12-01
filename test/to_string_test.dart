@@ -139,6 +139,16 @@ extension _\$GetterToString on Getter {
 """));
     });
 
+    test("ignore null", () async {
+      await expectGen("IgnoreNull", completion("""
+extension _\$IgnoreNullToString on IgnoreNull {
+  String _\$toString() {
+    return "IgnoreNull {abc: \$abc, \${def == null ? "" : "def: \$def, "}}";
+  }
+}
+"""));
+    });
+
     group("yaml options", () {
       test("name mapping", () async {
         final generator = ToStringGenerator(

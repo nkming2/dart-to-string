@@ -86,6 +86,12 @@ class Getter {
   int get def => 1;
 }
 
+@ToString(ignoreNull: true)
+class IgnoreNull {
+  final abc = 1;
+  final int? def = null;
+}
+
 @toString
 class FormatYamlName {
   final abc = <int>[];

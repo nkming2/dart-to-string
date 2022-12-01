@@ -2,6 +2,7 @@ class ToString {
   const ToString({
     this.ignorePrivate = false,
     this.sortByName = false,
+    this.ignoreNull = false,
   });
 
   /// If true, ignore private fields
@@ -10,6 +11,9 @@ class ToString {
   /// If true, sort fields by name, otherwise they will be sorted by the
   /// declaration order
   final bool sortByName;
+
+  /// If true, ignore fields that are null
+  final bool ignoreNull;
 }
 
 /// Annotate a field to be ignored from the string

@@ -30,15 +30,34 @@ class ToStringGenerator extends GeneratorForAnnotation<ToString> {
     return """
 extension _\$${clazz.name}ToString on ${clazz.name} {
   String _\$toString() {
-    return "${clazz.name} {${keys.map((k) => "$k: ${fields[k]}").join(", ")}}";
+    return "${clazz.name} {${_buildbody(keys.map((k) => fields[k]!).toList(), annotation)}}";
   }
 }
 """;
   }
 
-  Map<String, String> _getFields(
+  String _buildbody(List<_FieldMeta> fields, ConstantReader annotation) {
+    final isIgnoreNull = annotation.read("ignoreNull").boolValue;
+    if (!isIgnoreNull) {
+      return fields
+          .map((f) =>
+              "${f.name}: ${_applyFormatString(f, isIgnoreNull: isIgnoreNull)}")
+          .join(", ");
+    } else {
+      return fields.map((f) {
+        final stringify = _applyFormatString(f, isIgnoreNull: isIgnoreNull);
+        if (f.isNullable) {
+          return "\${${f.name} == null ? \"\" : \"${f.name}: $stringify, \"}";
+        } else {
+          return "${f.name}: $stringify, ";
+        }
+      }).join();
+    }
+  }
+
+  Map<String, _FieldMeta> _getFields(
       ClassElement clazz, ConstantReader annotation) {
-    final data = <String, String>{};
+    final data = <String, _FieldMeta>{};
     if (clazz.supertype?.isDartCoreObject == false) {
       final parent = clazz.supertype!.element2;
       data.addAll(_getFields(parent as ClassElement, annotation));
@@ -49,7 +68,7 @@ extension _\$${clazz.name}ToString on ${clazz.name} {
         configFormatStringNameMapping: configFormatStringNameMapping,
         configFormatStringUrlMapping: configFormatStringUrlMapping,
       ).build(f);
-      data[f.name] = _applyFormatString(meta, f);
+      data[f.name] = meta;
     }
     return data;
   }
@@ -74,16 +93,24 @@ extension _\$${clazz.name}ToString on ${clazz.name} {
     return true;
   }
 
-  String _applyFormatString(_FieldMeta meta, FieldElement field) {
+  String _applyFormatString(
+    _FieldMeta meta, {
+    required bool isIgnoreNull,
+  }) {
     if (meta.formatString == null) {
-      return r"$" + field.name;
+      return r"$" + meta.name;
     } else {
       if (meta.isNullable) {
-        final formatted =
-            meta.formatString!.replaceAll("\$?", "${field.name}!");
-        return "\${${field.name} == null ? null : \"$formatted\"}";
+        final formatted = meta.formatString!.replaceAll("\$?", "${meta.name}!");
+        if (isIgnoreNull) {
+          // if isIgnoreNull == true, the null check is done with the key not
+          // only the value
+          return formatted;
+        } else {
+          return "\${${meta.name} == null ? null : \"$formatted\"}";
+        }
       } else {
-        return meta.formatString!.replaceAll("\$?", field.name);
+        return meta.formatString!.replaceAll("\$?", meta.name);
       }
     }
   }
@@ -94,19 +121,12 @@ extension _\$${clazz.name}ToString on ${clazz.name} {
 
 class _FieldMeta {
   const _FieldMeta({
+    required this.name,
     required this.isNullable,
     this.formatString,
   });
 
-  _FieldMeta copyWith({
-    bool? isNullable,
-    String? formatString,
-  }) =>
-      _FieldMeta(
-        isNullable: isNullable ?? this.isNullable,
-        formatString: formatString ?? this.formatString,
-      );
-
+  final String name;
   final bool isNullable;
   final String? formatString;
 }
@@ -121,6 +141,7 @@ class _FieldMetaBuilder {
     _parseNullable(field);
     _parseFormatString(field);
     return _FieldMeta(
+      name: field.name,
       isNullable: _isNullable,
       formatString: _formatString,
     );
