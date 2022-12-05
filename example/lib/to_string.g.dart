@@ -32,6 +32,6 @@ extension _$SortByNameToString on SortByName {
 
 extension _$FormatYamlToString on FormatYaml {
   String _$toString() {
-    return "FormatYaml {abc: ${abc.toStringAsFixed(1)}, def: [length: ${def.length}], ghi: {length: ${ghi.length}}}";
+    return "FormatYaml {abc: ${abc.toStringAsFixed(1)}, def: [length: ${def.length}], ghi: {length: ${ghi.length}}, jkl: ${jkl.name}}";
   }
 }

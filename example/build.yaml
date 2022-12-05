@@ -14,3 +14,5 @@ targets:
           # library url (e.g, dart:collection#HashMap)
           formatStringUrlMapping:
             dart:collection#HashMap: "{length: ${$?.length}}"
+          # Use the .name property when printing an enum
+          useEnumName: true

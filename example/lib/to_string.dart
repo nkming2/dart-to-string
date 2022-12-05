@@ -52,4 +52,10 @@ class FormatYaml {
   final double abc = 1.234;
   final def = <int>[];
   final ghi = HashMap<String, int>();
+  final jkl = MyEnum.abc;
+}
+
+enum MyEnum {
+  abc,
+  def
 }

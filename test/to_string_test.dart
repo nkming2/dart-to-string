@@ -221,6 +221,38 @@ extension _\$FormatYamlUrlNullToString on FormatYamlUrlNull {
 }
 """));
       });
+
+      test("enum name (true)", () async {
+        final generator = ToStringGenerator(
+          configUseEnumName: true,
+        );
+        Future<void> expectGen(String name, Matcher matcher) async =>
+            expectGenerateNamed(await tester, name, generator, matcher);
+
+        await expectGen("FormatYamlEnumName", completion("""
+extension _\$FormatYamlEnumNameToString on FormatYamlEnumName {
+  String _\$toString() {
+    return "FormatYamlEnumName {abc: \${abc.name}}";
+  }
+}
+"""));
+      });
+
+      test("enum name (false)", () async {
+        final generator = ToStringGenerator(
+          configUseEnumName: false,
+        );
+        Future<void> expectGen(String name, Matcher matcher) async =>
+            expectGenerateNamed(await tester, name, generator, matcher);
+
+        await expectGen("FormatYamlEnumName", completion("""
+extension _\$FormatYamlEnumNameToString on FormatYamlEnumName {
+  String _\$toString() {
+    return "FormatYamlEnumName {abc: \$abc}";
+  }
+}
+"""));
+      });
     });
   });
 }

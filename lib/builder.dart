@@ -8,5 +8,6 @@ Builder toStringBuilder(BuilderOptions options) => SharedPartBuilder([
             options.config["formatStringNameMapping"]?.cast<String, String>(),
         configFormatStringUrlMapping:
             options.config["formatStringUrlMapping"]?.cast<String, String>(),
+        configUseEnumName: options.config["useEnumName"],
       )
     ], "to_string");

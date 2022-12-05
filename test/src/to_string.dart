@@ -111,3 +111,13 @@ class FormatYamlNameNull {
 class FormatYamlUrlNull {
   final List<int>? abc = null;
 }
+
+@toString
+class FormatYamlEnumName {
+  final abc = MyEnum.abc;
+}
+
+enum MyEnum {
+  abc,
+  def,
+}

@@ -9,6 +9,7 @@ class ToStringGenerator extends GeneratorForAnnotation<ToString> {
   const ToStringGenerator({
     this.configFormatStringNameMapping,
     this.configFormatStringUrlMapping,
+    this.configUseEnumName,
   });
 
   @override
@@ -67,6 +68,7 @@ extension _\$${clazz.name}ToString on ${clazz.name} {
       final meta = _FieldMetaBuilder(
         configFormatStringNameMapping: configFormatStringNameMapping,
         configFormatStringUrlMapping: configFormatStringUrlMapping,
+        configUseEnumName: configUseEnumName,
       ).build(f);
       data[f.name] = meta;
     }
@@ -117,6 +119,9 @@ extension _\$${clazz.name}ToString on ${clazz.name} {
 
   final Map<String, String>? configFormatStringNameMapping;
   final Map<String, String>? configFormatStringUrlMapping;
+
+  /// If true, use the .name property when printing an enum
+  final bool? configUseEnumName;
 }
 
 class _FieldMeta {
@@ -135,6 +140,7 @@ class _FieldMetaBuilder {
   _FieldMetaBuilder({
     this.configFormatStringNameMapping,
     this.configFormatStringUrlMapping,
+    this.configUseEnumName,
   });
 
   _FieldMeta build(FieldElement field) {
@@ -182,11 +188,16 @@ class _FieldMetaBuilder {
       return formatString;
     }
 
+    if (configUseEnumName == true && field.type.element2 is EnumElement) {
+      return r"${$?.name}";
+    }
+
     return null;
   }
 
   final Map<String, String>? configFormatStringNameMapping;
   final Map<String, String>? configFormatStringUrlMapping;
+  final bool? configUseEnumName;
 
   late bool _isNullable;
   String? _formatString;
