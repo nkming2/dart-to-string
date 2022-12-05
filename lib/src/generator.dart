@@ -118,7 +118,13 @@ extension _\$${clazz.name}ToString on ${clazz.name} {
     }
   }
 
+  /// Map a type by name to a format string. Since the types are mapped by name,
+  /// this may confuse the generator if you have multiple classes having the
+  /// same name. In that case you can use formatStringUrlMapping instead
   final Map<String, String>? configFormatStringNameMapping;
+
+  /// Map a type by name to a format string. The types are mapped by their
+  /// library url (e.g, dart:collection#HashMap)
   final Map<String, String>? configFormatStringUrlMapping;
 
   /// If true, use the .name property when printing an enum
@@ -160,6 +166,7 @@ class _FieldMetaBuilder {
 
   void _parseFormatString(FieldElement field) {
     if (TypeChecker.fromRuntime(Format).hasAnnotationOf(field)) {
+      // [Format] annotation takes priority over everything else
       final annotation =
           TypeChecker.fromRuntime(Format).annotationsOf(field).first;
       final formatString =
