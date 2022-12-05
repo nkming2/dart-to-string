@@ -163,6 +163,17 @@ extension _\$IgnoreNullToString on IgnoreNull {
 """));
     });
 
+    test("abstract class", () async {
+      await expectGen("AbstractClass", completion("""
+extension _\$AbstractClassToString on AbstractClass {
+  String _\$toString() {
+    // ignore: unnecessary_string_interpolations
+    return "\${objectRuntimeType(this, "AbstractClass")} {abc: \$abc}";
+  }
+}
+"""));
+    });
+
     group("yaml options", () {
       test("name mapping", () async {
         final generator = ToStringGenerator(

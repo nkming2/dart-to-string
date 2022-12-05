@@ -32,10 +32,18 @@ class ToStringGenerator extends GeneratorForAnnotation<ToString> {
 extension _\$${clazz.name}ToString on ${clazz.name} {
   String _\$toString() {
     // ignore: unnecessary_string_interpolations
-    return "${clazz.name} {${_buildbody(keys.map((k) => fields[k]!).toList(), annotation)}}";
+    return "${_buildIdentifier(clazz)} {${_buildbody(keys.map((k) => fields[k]!).toList(), annotation)}}";
   }
 }
 """;
+  }
+
+  String _buildIdentifier(ClassElement clazz) {
+    if (clazz.isAbstract) {
+      return "\${objectRuntimeType(this, \"${clazz.name}\")}";
+    } else {
+      return clazz.name;
+    }
   }
 
   String _buildbody(List<_FieldMeta> fields, ConstantReader annotation) {

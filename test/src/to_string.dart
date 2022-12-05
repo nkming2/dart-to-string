@@ -117,6 +117,11 @@ class FormatYamlEnumName {
   final abc = MyEnum.abc;
 }
 
+@toString
+abstract class AbstractClass {
+  final abc = 1;
+}
+
 enum MyEnum {
   abc,
   def,
