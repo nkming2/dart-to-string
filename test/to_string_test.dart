@@ -13,6 +13,7 @@ void main() {
       await expectGen("Empty", completion("""
 extension _\$EmptyToString on Empty {
   String _\$toString() {
+    // ignore: unnecessary_string_interpolations
     return "Empty {}";
   }
 }
@@ -23,6 +24,7 @@ extension _\$EmptyToString on Empty {
       await expectGen("SingleField", completion("""
 extension _\$SingleFieldToString on SingleField {
   String _\$toString() {
+    // ignore: unnecessary_string_interpolations
     return "SingleField {abc: \$abc}";
   }
 }
@@ -33,6 +35,7 @@ extension _\$SingleFieldToString on SingleField {
       await expectGen("MultipleField", completion("""
 extension _\$MultipleFieldToString on MultipleField {
   String _\$toString() {
+    // ignore: unnecessary_string_interpolations
     return "MultipleField {abc: \$abc, def: \$def, geh: \$geh}";
   }
 }
@@ -43,6 +46,7 @@ extension _\$MultipleFieldToString on MultipleField {
       await expectGen("DerivedClass", completion("""
 extension _\$DerivedClassToString on DerivedClass {
   String _\$toString() {
+    // ignore: unnecessary_string_interpolations
     return "DerivedClass {abc: \$abc, def: \$def}";
   }
 }
@@ -53,6 +57,7 @@ extension _\$DerivedClassToString on DerivedClass {
       await expectGen("StaticField", completion("""
 extension _\$StaticFieldToString on StaticField {
   String _\$toString() {
+    // ignore: unnecessary_string_interpolations
     return "StaticField {abc: \$abc}";
   }
 }
@@ -63,6 +68,7 @@ extension _\$StaticFieldToString on StaticField {
       await expectGen("IgnoreField", completion("""
 extension _\$IgnoreFieldToString on IgnoreField {
   String _\$toString() {
+    // ignore: unnecessary_string_interpolations
     return "IgnoreField {def: \$def}";
   }
 }
@@ -73,6 +79,7 @@ extension _\$IgnoreFieldToString on IgnoreField {
       await expectGen("PrivateField", completion("""
 extension _\$PrivateFieldToString on PrivateField {
   String _\$toString() {
+    // ignore: unnecessary_string_interpolations
     return "PrivateField {abc: \$abc, _def: \$_def}";
   }
 }
@@ -83,6 +90,7 @@ extension _\$PrivateFieldToString on PrivateField {
       await expectGen("IgnorePrivateField", completion("""
 extension _\$IgnorePrivateFieldToString on IgnorePrivateField {
   String _\$toString() {
+    // ignore: unnecessary_string_interpolations
     return "IgnorePrivateField {def: \$def}";
   }
 }
@@ -93,6 +101,7 @@ extension _\$IgnorePrivateFieldToString on IgnorePrivateField {
       await expectGen("SortByName", completion("""
 extension _\$SortByNameToString on SortByName {
   String _\$toString() {
+    // ignore: unnecessary_string_interpolations
     return "SortByName {abc: \$abc, def: \$def}";
   }
 }
@@ -103,6 +112,7 @@ extension _\$SortByNameToString on SortByName {
       await expectGen("SortByDeclaration", completion("""
 extension _\$SortByDeclarationToString on SortByDeclaration {
   String _\$toString() {
+    // ignore: unnecessary_string_interpolations
     return "SortByDeclaration {def: \$def, abc: \$abc}";
   }
 }
@@ -113,6 +123,7 @@ extension _\$SortByDeclarationToString on SortByDeclaration {
       await expectGen("Grandchild", completion("""
 extension _\$GrandchildToString on Grandchild {
   String _\$toString() {
+    // ignore: unnecessary_string_interpolations
     return "Grandchild {abc: \$abc, def: \$def}";
   }
 }
@@ -123,6 +134,7 @@ extension _\$GrandchildToString on Grandchild {
       await expectGen("FormatDouble", completion("""
 extension _\$FormatDoubleToString on FormatDouble {
   String _\$toString() {
+    // ignore: unnecessary_string_interpolations
     return "FormatDouble {abc: \${abc.toStringAsFixed(1)}}";
   }
 }
@@ -133,6 +145,7 @@ extension _\$FormatDoubleToString on FormatDouble {
       await expectGen("Getter", completion("""
 extension _\$GetterToString on Getter {
   String _\$toString() {
+    // ignore: unnecessary_string_interpolations
     return "Getter {abc: \$abc}";
   }
 }
@@ -143,6 +156,7 @@ extension _\$GetterToString on Getter {
       await expectGen("IgnoreNull", completion("""
 extension _\$IgnoreNullToString on IgnoreNull {
   String _\$toString() {
+    // ignore: unnecessary_string_interpolations
     return "IgnoreNull {abc: \$abc, \${def == null ? "" : "def: \$def, "}}";
   }
 }
@@ -162,6 +176,7 @@ extension _\$IgnoreNullToString on IgnoreNull {
         await expectGen("FormatYamlName", completion("""
 extension _\$FormatYamlNameToString on FormatYamlName {
   String _\$toString() {
+    // ignore: unnecessary_string_interpolations
     return "FormatYamlName {abc: \${abc.first}}";
   }
 }
@@ -180,6 +195,7 @@ extension _\$FormatYamlNameToString on FormatYamlName {
         await expectGen("FormatYamlUrl", completion("""
 extension _\$FormatYamlUrlToString on FormatYamlUrl {
   String _\$toString() {
+    // ignore: unnecessary_string_interpolations
     return "FormatYamlUrl {abc: \${abc.first}}";
   }
 }
@@ -198,6 +214,7 @@ extension _\$FormatYamlUrlToString on FormatYamlUrl {
         await expectGen("FormatYamlNameNull", completion("""
 extension _\$FormatYamlNameNullToString on FormatYamlNameNull {
   String _\$toString() {
+    // ignore: unnecessary_string_interpolations
     return "FormatYamlNameNull {abc: \${abc == null ? null : "\${abc!.first}"}}";
   }
 }
@@ -216,6 +233,7 @@ extension _\$FormatYamlNameNullToString on FormatYamlNameNull {
         await expectGen("FormatYamlUrlNull", completion("""
 extension _\$FormatYamlUrlNullToString on FormatYamlUrlNull {
   String _\$toString() {
+    // ignore: unnecessary_string_interpolations
     return "FormatYamlUrlNull {abc: \${abc == null ? null : "\${abc!.first}"}}";
   }
 }
@@ -232,6 +250,7 @@ extension _\$FormatYamlUrlNullToString on FormatYamlUrlNull {
         await expectGen("FormatYamlEnumName", completion("""
 extension _\$FormatYamlEnumNameToString on FormatYamlEnumName {
   String _\$toString() {
+    // ignore: unnecessary_string_interpolations
     return "FormatYamlEnumName {abc: \${abc.name}}";
   }
 }
@@ -248,6 +267,7 @@ extension _\$FormatYamlEnumNameToString on FormatYamlEnumName {
         await expectGen("FormatYamlEnumName", completion("""
 extension _\$FormatYamlEnumNameToString on FormatYamlEnumName {
   String _\$toString() {
+    // ignore: unnecessary_string_interpolations
     return "FormatYamlEnumName {abc: \$abc}";
   }
 }

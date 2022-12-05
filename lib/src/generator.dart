@@ -31,6 +31,7 @@ class ToStringGenerator extends GeneratorForAnnotation<ToString> {
     return """
 extension _\$${clazz.name}ToString on ${clazz.name} {
   String _\$toString() {
+    // ignore: unnecessary_string_interpolations
     return "${clazz.name} {${_buildbody(keys.map((k) => fields[k]!).toList(), annotation)}}";
   }
 }
