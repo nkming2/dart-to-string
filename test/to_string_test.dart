@@ -157,7 +157,7 @@ extension _\$GetterToString on Getter {
 extension _\$IgnoreNullToString on IgnoreNull {
   String _\$toString() {
     // ignore: unnecessary_string_interpolations
-    return "IgnoreNull {abc: \$abc, \${def == null ? "" : "def: \$def, "}}";
+    return "IgnoreNull {abc: \$abc, \${def == null ? "" : "def: \$def"}}";
   }
 }
 """));

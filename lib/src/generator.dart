@@ -52,26 +52,16 @@ extension _\$${clazz.name}ToString on ${clazz.name} {
   }
 
   String _buildbody(List<_FieldMeta> fields, ToString toString) {
-    if (!toString.ignoreNull) {
-      return fields
-          .map((f) => "${f.name}: ${_applyFormatString(
-                f,
-                isIgnoreNull: toString.ignoreNull,
-              )}")
-          .join(", ");
-    } else {
-      return fields.map((f) {
-        final stringify = _applyFormatString(
-          f,
-          isIgnoreNull: toString.ignoreNull,
-        );
-        if (f.isNullable) {
-          return "\${${f.name} == null ? \"\" : \"${f.name}: $stringify, \"}";
-        } else {
-          return "${f.name}: $stringify, ";
-        }
-      }).join();
-    }
+    return fields.mapIndexed((i, f) {
+      final suffix = i == fields.length - 1 ? "" : ", ";
+      final stringify = _stringify(f, toString) + suffix;
+      if (toString.ignoreNull && f.isNullable) {
+        final ignored = "${f.name} == null";
+        return "\${$ignored ? \"\" : \"$stringify\"}";
+      } else {
+        return stringify;
+      }
+    }).join();
   }
 
   Map<String, _FieldMeta> _getFields(ClassElement clazz, ToString toString) {
@@ -113,24 +103,21 @@ extension _\$${clazz.name}ToString on ${clazz.name} {
     return true;
   }
 
-  String _applyFormatString(
-    _FieldMeta meta, {
-    required bool isIgnoreNull,
-  }) {
+  String _stringify(_FieldMeta meta, ToString toString) {
     if (meta.formatString == null) {
-      return r"$" + meta.name;
+      return "${meta.name}: \$${meta.name}";
     } else {
       if (meta.isNullable) {
-        final formatted = meta.formatString!.replaceAll("\$?", "${meta.name}!");
-        if (isIgnoreNull) {
-          // if isIgnoreNull == true, the null check is done with the key not
-          // only the value
-          return formatted;
+        final formatted = meta.formatString!.replaceAll(r"$?", "${meta.name}!");
+        if (toString.ignoreNull) {
+          // if ignoreNull == true, the null check is done outside
+          return "${meta.name}: $formatted";
         } else {
-          return "\${${meta.name} == null ? null : \"$formatted\"}";
+          return "${meta.name}: \${${meta.name} == null ? null : \"$formatted\"}";
         }
       } else {
-        return meta.formatString!.replaceAll("\$?", meta.name);
+        final formatted = meta.formatString!.replaceAll(r"$?", meta.name);
+        return "${meta.name}: $formatted";
       }
     }
   }
@@ -152,7 +139,7 @@ class _FieldMeta {
   const _FieldMeta({
     required this.name,
     required this.isNullable,
-    this.formatString,
+    required this.formatString,
   });
 
   final String name;
@@ -169,11 +156,11 @@ class _FieldMetaBuilder {
 
   _FieldMeta build(FieldElement field) {
     _parseNullable(field);
-    _parseFormatString(field);
+    final formatString = _parseFormatString(field);
     return _FieldMeta(
       name: field.name,
       isNullable: _isNullable,
-      formatString: _formatString,
+      formatString: formatString,
     );
   }
 
@@ -181,17 +168,18 @@ class _FieldMetaBuilder {
     _isNullable = field.type.nullabilitySuffix == NullabilitySuffix.question;
   }
 
-  void _parseFormatString(FieldElement field) {
+  String? _parseFormatString(FieldElement field) {
     final format = _getFormatAnnotation(field);
     if (format != null) {
       // [Format] annotation takes priority over everything else
-      _formatString = format.formatString;
+      return format.formatString;
     } else {
       final formatString = _getFieldFormatString(field);
       if (formatString != null) {
-        _formatString = formatString;
+        return formatString;
       }
     }
+    return null;
   }
 
   String? _getFieldFormatString(FieldElement field) {
@@ -213,8 +201,7 @@ class _FieldMetaBuilder {
       return formatString;
     }
 
-    formatString =
-        configFormatStringNameMapping?.entries.firstWhereOrNull((e) {
+    formatString = configFormatStringNameMapping?.entries.firstWhereOrNull((e) {
       if (field.type.alias != null) {
         if (field.type.alias!.element.name == e.key) {
           return true;
@@ -248,7 +235,6 @@ class _FieldMetaBuilder {
   final bool? configUseEnumName;
 
   late bool _isNullable;
-  String? _formatString;
 }
 
 Ignore? _getIgnoreAnnotation(FieldElement field) {
