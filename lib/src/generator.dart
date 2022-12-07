@@ -22,17 +22,22 @@ class ToStringGenerator extends GeneratorForAnnotation<ToString> {
       print("Not a class");
       return null;
     }
+    final toString = ToString(
+      ignorePrivate: annotation.read("ignorePrivate").boolValue,
+      sortByName: annotation.read("sortByName").boolValue,
+      ignoreNull: annotation.read("ignoreNull").boolValue,
+    );
     final clazz = element;
-    final fields = _getFields(clazz, annotation);
+    final fields = _getFields(clazz, toString);
     final keys = fields.keys.toList();
-    if (annotation.read("sortByName").boolValue) {
+    if (toString.sortByName) {
       keys.sort();
     }
     return """
 extension _\$${clazz.name}ToString on ${clazz.name} {
   String _\$toString() {
     // ignore: unnecessary_string_interpolations
-    return "${_buildIdentifier(clazz)} {${_buildbody(keys.map((k) => fields[k]!).toList(), annotation)}}";
+    return "${_buildIdentifier(clazz)} {${_buildbody(keys.map((k) => fields[k]!).toList(), toString)}}";
   }
 }
 """;
@@ -46,16 +51,20 @@ extension _\$${clazz.name}ToString on ${clazz.name} {
     }
   }
 
-  String _buildbody(List<_FieldMeta> fields, ConstantReader annotation) {
-    final isIgnoreNull = annotation.read("ignoreNull").boolValue;
-    if (!isIgnoreNull) {
+  String _buildbody(List<_FieldMeta> fields, ToString toString) {
+    if (!toString.ignoreNull) {
       return fields
-          .map((f) =>
-              "${f.name}: ${_applyFormatString(f, isIgnoreNull: isIgnoreNull)}")
+          .map((f) => "${f.name}: ${_applyFormatString(
+                f,
+                isIgnoreNull: toString.ignoreNull,
+              )}")
           .join(", ");
     } else {
       return fields.map((f) {
-        final stringify = _applyFormatString(f, isIgnoreNull: isIgnoreNull);
+        final stringify = _applyFormatString(
+          f,
+          isIgnoreNull: toString.ignoreNull,
+        );
         if (f.isNullable) {
           return "\${${f.name} == null ? \"\" : \"${f.name}: $stringify, \"}";
         } else {
@@ -65,15 +74,14 @@ extension _\$${clazz.name}ToString on ${clazz.name} {
     }
   }
 
-  Map<String, _FieldMeta> _getFields(
-      ClassElement clazz, ConstantReader annotation) {
+  Map<String, _FieldMeta> _getFields(ClassElement clazz, ToString toString) {
     final data = <String, _FieldMeta>{};
     if (clazz.supertype?.isDartCoreObject == false) {
       final parent = clazz.supertype!.element2;
-      data.addAll(_getFields(parent as ClassElement, annotation));
+      data.addAll(_getFields(parent as ClassElement, toString));
     }
     for (final f
-        in clazz.fields.where((f) => _shouldIncludeField(f, annotation))) {
+        in clazz.fields.where((f) => _shouldIncludeField(f, toString))) {
       final meta = _FieldMetaBuilder(
         configFormatStringNameMapping: configFormatStringNameMapping,
         configFormatStringUrlMapping: configFormatStringUrlMapping,
@@ -84,16 +92,17 @@ extension _\$${clazz.name}ToString on ${clazz.name} {
     return data;
   }
 
-  bool _shouldIncludeField(FieldElement field, ConstantReader annotation) {
+  bool _shouldIncludeField(FieldElement field, ToString toString) {
     if (field.isStatic) {
       // ignore static fields
       return false;
     }
-    if (TypeChecker.fromRuntime(Ignore).hasAnnotationOf(field)) {
+    final ignore = _getIgnoreAnnotation(field);
+    if (ignore != null) {
       // ignore fields annotated by [Ignore]
       return false;
     }
-    if (annotation.read("ignorePrivate").boolValue && field.isPrivate) {
+    if (toString.ignorePrivate && field.isPrivate) {
       // ignore private fields if so configured
       return false;
     }
@@ -173,13 +182,10 @@ class _FieldMetaBuilder {
   }
 
   void _parseFormatString(FieldElement field) {
-    if (TypeChecker.fromRuntime(Format).hasAnnotationOf(field)) {
+    final format = _getFormatAnnotation(field);
+    if (format != null) {
       // [Format] annotation takes priority over everything else
-      final annotation =
-          TypeChecker.fromRuntime(Format).annotationsOf(field).first;
-      final formatString =
-          annotation.getField("formatString")!.toStringValue()!;
-      _formatString = formatString;
+      _formatString = format.formatString;
     } else {
       final formatString = _getFieldFormatString(field);
       if (formatString != null) {
@@ -217,4 +223,23 @@ class _FieldMetaBuilder {
 
   late bool _isNullable;
   String? _formatString;
+}
+
+Ignore? _getIgnoreAnnotation(FieldElement field) {
+  if (TypeChecker.fromRuntime(Ignore).hasAnnotationOf(field)) {
+    return const Ignore();
+  } else {
+    return null;
+  }
+}
+
+Format? _getFormatAnnotation(FieldElement field) {
+  if (TypeChecker.fromRuntime(Format).hasAnnotationOf(field)) {
+    final annotation =
+        TypeChecker.fromRuntime(Format).annotationsOf(field).first;
+    final formatString = annotation.getField("formatString")!.toStringValue()!;
+    return Format(formatString);
+  } else {
+    return null;
+  }
 }
