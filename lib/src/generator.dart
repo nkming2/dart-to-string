@@ -195,17 +195,43 @@ class _FieldMetaBuilder {
   }
 
   String? _getFieldFormatString(FieldElement field) {
-    var formatString = configFormatStringUrlMapping?.entries
-        .firstWhereOrNull(
-            (e) => TypeChecker.fromUrl(e.key).isExactlyType(field.type))
-        ?.value;
+    var formatString =
+        configFormatStringUrlMapping?.entries.firstWhereOrNull((e) {
+      if (field.type.alias != null) {
+        if (TypeChecker.fromUrl(e.key).isExactly(field.type.alias!.element)) {
+          return true;
+        }
+      }
+      if (field.type.element2 != null) {
+        if (TypeChecker.fromUrl(e.key).isExactlyType(field.type)) {
+          return true;
+        }
+      }
+      return false;
+    })?.value;
     if (formatString != null) {
       return formatString;
     }
 
-    formatString = configFormatStringNameMapping?.entries
-        .firstWhereOrNull((e) => field.type.element2!.name == e.key)
-        ?.value;
+    formatString =
+        configFormatStringNameMapping?.entries.firstWhereOrNull((e) {
+      if (field.type.alias != null) {
+        if (field.type.alias!.element.name == e.key) {
+          return true;
+        }
+      }
+      if (field.type.element2 != null) {
+        if (field.type.element2!.name == e.key) {
+          return true;
+        }
+      } else {
+        // unnamed function types will have .element as null
+        if (field.type.toString() == e.key) {
+          return true;
+        }
+      }
+      return false;
+    })?.value;
     if (formatString != null) {
       return formatString;
     }

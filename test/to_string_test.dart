@@ -175,80 +175,179 @@ extension _\$AbstractClassToString on AbstractClass {
     });
 
     group("yaml options", () {
-      test("name mapping", () async {
-        final generator = ToStringGenerator(
-          configFormatStringNameMapping: {
-            "List": r"${$?.first}",
-          },
-        );
-        Future<void> expectGen(String name, Matcher matcher) async =>
-            expectGenerateNamed(await tester, name, generator, matcher);
+      group("name mapping", () {
+        test("basic", () async {
+          final generator = ToStringGenerator(
+            configFormatStringNameMapping: {
+              "List": r"${$?.first}",
+            },
+          );
+          Future<void> expectGen(String name, Matcher matcher) async =>
+              expectGenerateNamed(await tester, name, generator, matcher);
 
-        await expectGen("FormatYamlName", completion("""
-extension _\$FormatYamlNameToString on FormatYamlName {
+          await expectGen("FormatYaml", completion("""
+extension _\$FormatYamlToString on FormatYaml {
   String _\$toString() {
     // ignore: unnecessary_string_interpolations
-    return "FormatYamlName {abc: \${abc.first}}";
+    return "FormatYaml {abc: \${abc.first}}";
   }
 }
 """));
+        });
+
+        test("nullable", () async {
+          final generator = ToStringGenerator(
+            configFormatStringNameMapping: {
+              "List": r"${$?.first}",
+            },
+          );
+          Future<void> expectGen(String name, Matcher matcher) async =>
+              expectGenerateNamed(await tester, name, generator, matcher);
+
+          await expectGen("FormatYamlNull", completion("""
+extension _\$FormatYamlNullToString on FormatYamlNull {
+  String _\$toString() {
+    // ignore: unnecessary_string_interpolations
+    return "FormatYamlNull {abc: \${abc == null ? null : "\${abc!.first}"}}";
+  }
+}
+"""));
+        });
+
+        test("unnamed function type", () async {
+          final generator = ToStringGenerator(
+            configFormatStringNameMapping: {
+              "void Function(int)": r"function",
+            },
+          );
+          Future<void> expectGen(String name, Matcher matcher) async =>
+              expectGenerateNamed(await tester, name, generator, matcher);
+
+          await expectGen("FormatYamlUnnamedFunction", completion("""
+extension _\$FormatYamlUnnamedFunctionToString on FormatYamlUnnamedFunction {
+  String _\$toString() {
+    // ignore: unnecessary_string_interpolations
+    return "FormatYamlUnnamedFunction {abc: function}";
+  }
+}
+"""));
+        });
+
+        test("function alias", () async {
+          final generator = ToStringGenerator(
+            configFormatStringNameMapping: {
+              "VoidCallback": r"callback",
+            },
+          );
+          Future<void> expectGen(String name, Matcher matcher) async =>
+              expectGenerateNamed(await tester, name, generator, matcher);
+
+          await expectGen("FormatYamlFunctionAlias", completion("""
+extension _\$FormatYamlFunctionAliasToString on FormatYamlFunctionAlias {
+  String _\$toString() {
+    // ignore: unnecessary_string_interpolations
+    return "FormatYamlFunctionAlias {abc: callback}";
+  }
+}
+"""));
+        });
+
+        test("alias", () async {
+          final generator = ToStringGenerator(
+            configFormatStringNameMapping: {
+              "MyType": r"mytype",
+            },
+          );
+          Future<void> expectGen(String name, Matcher matcher) async =>
+              expectGenerateNamed(await tester, name, generator, matcher);
+
+          await expectGen("FormatYamlAlias", completion("""
+extension _\$FormatYamlAliasToString on FormatYamlAlias {
+  String _\$toString() {
+    // ignore: unnecessary_string_interpolations
+    return "FormatYamlAlias {abc: mytype}";
+  }
+}
+"""));
+        });
+
+        test("alias (original type)", () async {
+          final generator = ToStringGenerator(
+            configFormatStringNameMapping: {
+              "double": r"double",
+            },
+          );
+          Future<void> expectGen(String name, Matcher matcher) async =>
+              expectGenerateNamed(await tester, name, generator, matcher);
+
+          await expectGen("FormatYamlAlias", completion("""
+extension _\$FormatYamlAliasToString on FormatYamlAlias {
+  String _\$toString() {
+    // ignore: unnecessary_string_interpolations
+    return "FormatYamlAlias {abc: double}";
+  }
+}
+"""));
+        });
       });
 
-      test("url mapping", () async {
-        final generator = ToStringGenerator(
-          configFormatStringUrlMapping: {
-            "dart:core#List": r"${$?.first}",
-          },
-        );
-        Future<void> expectGen(String name, Matcher matcher) async =>
-            expectGenerateNamed(await tester, name, generator, matcher);
+      group("url mapping", () {
+        test("basic", () async {
+          final generator = ToStringGenerator(
+            configFormatStringUrlMapping: {
+              "dart:core#List": r"${$?.first}",
+            },
+          );
+          Future<void> expectGen(String name, Matcher matcher) async =>
+              expectGenerateNamed(await tester, name, generator, matcher);
 
-        await expectGen("FormatYamlUrl", completion("""
-extension _\$FormatYamlUrlToString on FormatYamlUrl {
+          await expectGen("FormatYaml", completion("""
+extension _\$FormatYamlToString on FormatYaml {
   String _\$toString() {
     // ignore: unnecessary_string_interpolations
-    return "FormatYamlUrl {abc: \${abc.first}}";
+    return "FormatYaml {abc: \${abc.first}}";
   }
 }
 """));
-      });
+        });
 
-      test("name mapping (nullable)", () async {
-        final generator = ToStringGenerator(
-          configFormatStringNameMapping: {
-            "List": r"${$?.first}",
-          },
-        );
-        Future<void> expectGen(String name, Matcher matcher) async =>
-            expectGenerateNamed(await tester, name, generator, matcher);
+        test("nullable", () async {
+          final generator = ToStringGenerator(
+            configFormatStringUrlMapping: {
+              "dart:core#List": r"${$?.first}",
+            },
+          );
+          Future<void> expectGen(String name, Matcher matcher) async =>
+              expectGenerateNamed(await tester, name, generator, matcher);
 
-        await expectGen("FormatYamlNameNull", completion("""
-extension _\$FormatYamlNameNullToString on FormatYamlNameNull {
+          await expectGen("FormatYamlNull", completion("""
+extension _\$FormatYamlNullToString on FormatYamlNull {
   String _\$toString() {
     // ignore: unnecessary_string_interpolations
-    return "FormatYamlNameNull {abc: \${abc == null ? null : "\${abc!.first}"}}";
+    return "FormatYamlNull {abc: \${abc == null ? null : "\${abc!.first}"}}";
   }
 }
 """));
-      });
+        });
 
-      test("url mapping (nullable)", () async {
-        final generator = ToStringGenerator(
-          configFormatStringUrlMapping: {
-            "dart:core#List": r"${$?.first}",
-          },
-        );
-        Future<void> expectGen(String name, Matcher matcher) async =>
-            expectGenerateNamed(await tester, name, generator, matcher);
+        test("function alias", () async {
+          final generator = ToStringGenerator(
+            configFormatStringUrlMapping: {
+              "dart:html#VoidCallback": r"callback",
+            },
+          );
+          Future<void> expectGen(String name, Matcher matcher) async =>
+              expectGenerateNamed(await tester, name, generator, matcher);
 
-        await expectGen("FormatYamlUrlNull", completion("""
-extension _\$FormatYamlUrlNullToString on FormatYamlUrlNull {
+          await expectGen("FormatYamlFunctionAlias", completion("""
+extension _\$FormatYamlFunctionAliasToString on FormatYamlFunctionAlias {
   String _\$toString() {
     // ignore: unnecessary_string_interpolations
-    return "FormatYamlUrlNull {abc: \${abc == null ? null : "\${abc!.first}"}}";
+    return "FormatYamlFunctionAlias {abc: callback}";
   }
 }
 """));
+        });
       });
 
       test("enum name (true)", () async {

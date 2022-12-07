@@ -1,5 +1,7 @@
 // ignore_for_file: unused_field
 
+import 'dart:html';
+
 import 'package:to_string/to_string.dart';
 
 @toString
@@ -93,23 +95,28 @@ class IgnoreNull {
 }
 
 @toString
-class FormatYamlName {
+class FormatYaml {
   final abc = <int>[];
 }
 
 @toString
-class FormatYamlUrl {
-  final abc = <int>[];
-}
-
-@toString
-class FormatYamlNameNull {
+class FormatYamlNull {
   final List<int>? abc = null;
 }
 
 @toString
-class FormatYamlUrlNull {
-  final List<int>? abc = null;
+class FormatYamlUnnamedFunction {
+  void Function(int abc) abc = (_) {};
+}
+
+@toString
+class FormatYamlFunctionAlias {
+ VoidCallback abc = () {};
+}
+
+@toString
+class FormatYamlAlias {
+  MyType abc = 1;
 }
 
 @toString
@@ -121,6 +128,8 @@ class FormatYamlEnumName {
 abstract class AbstractClass {
   final abc = 1;
 }
+
+typedef MyType = double;
 
 enum MyEnum {
   abc,
