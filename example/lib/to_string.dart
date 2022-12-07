@@ -55,7 +55,4 @@ class FormatYaml {
   final jkl = MyEnum.abc;
 }
 
-enum MyEnum {
-  abc,
-  def
-}
+enum MyEnum { abc, def }
