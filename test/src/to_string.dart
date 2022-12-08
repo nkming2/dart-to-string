@@ -129,6 +129,12 @@ abstract class AbstractClass {
   final abc = 1;
 }
 
+@ToString(extraParams: r"{bool print = true}")
+class ExtraParams {
+  @Format(r"${print ? abc : ''}")
+  final abc = 1;
+}
+
 typedef MyType = double;
 
 enum MyEnum {

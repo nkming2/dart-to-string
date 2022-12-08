@@ -3,6 +3,7 @@ class ToString {
     this.ignorePrivate = false,
     this.sortByName = false,
     this.ignoreNull = false,
+    this.extraParams,
   });
 
   /// If true, ignore private fields
@@ -14,6 +15,15 @@ class ToString {
 
   /// If true, ignore fields that are null
   final bool ignoreNull;
+
+  /// Add extra params to the generated toString function
+  ///
+  /// @ToString(extraParams: r"{bool print = true}")
+  /// class ExtraParams {
+  ///   @override
+  ///   String toString({bool print = true}) => _$toString(print: print);
+  /// }
+  final String? extraParams;
 }
 
 /// Annotate a field to be ignored from the string

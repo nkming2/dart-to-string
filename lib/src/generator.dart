@@ -4,6 +4,7 @@ import 'package:build/build.dart';
 import 'package:collection/collection.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:to_string/src/annotations.dart';
+import 'package:to_string/src/util.dart';
 
 class ToStringGenerator extends GeneratorForAnnotation<ToString> {
   const ToStringGenerator({
@@ -26,6 +27,7 @@ class ToStringGenerator extends GeneratorForAnnotation<ToString> {
       ignorePrivate: annotation.read("ignorePrivate").boolValue,
       sortByName: annotation.read("sortByName").boolValue,
       ignoreNull: annotation.read("ignoreNull").boolValue,
+      extraParams: annotation.read("extraParams").stringValueOrNull,
     );
     final clazz = element;
     final fields = _getFields(clazz, toString);
@@ -35,7 +37,7 @@ class ToStringGenerator extends GeneratorForAnnotation<ToString> {
     }
     return """
 extension _\$${clazz.name}ToString on ${clazz.name} {
-  String _\$toString() {
+  String _\$toString(${toString.extraParams ?? ""}) {
     // ignore: unnecessary_string_interpolations
     return "${_buildIdentifier(clazz)} {${_buildbody(keys.map((k) => fields[k]!).toList(), toString)}}";
   }

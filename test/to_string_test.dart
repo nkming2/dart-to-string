@@ -174,6 +174,17 @@ extension _\$AbstractClassToString on AbstractClass {
 """));
     });
 
+    test("extra params", () async {
+      await expectGen("ExtraParams", completion("""
+extension _\$ExtraParamsToString on ExtraParams {
+  String _\$toString({bool print = true}) {
+    // ignore: unnecessary_string_interpolations
+    return "ExtraParams {abc: \${print ? abc : ''}}";
+  }
+}
+"""));
+    });
+
     group("yaml options", () {
       group("name mapping", () {
         test("basic", () async {
