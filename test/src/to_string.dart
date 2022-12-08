@@ -111,7 +111,7 @@ class FormatYamlUnnamedFunction {
 
 @toString
 class FormatYamlFunctionAlias {
- VoidCallback abc = () {};
+  VoidCallback abc = () {};
 }
 
 @toString
