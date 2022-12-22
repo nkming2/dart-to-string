@@ -9,8 +9,10 @@ environment:
 
 dependencies:
   to_string:
-    path: ../
+    path: ../../to_string
 
 dev_dependencies:
   build_runner: ^2.3.2
   lints: ^2.0.0
+  to_string_builder:
+    path: ../

@@ -1,6 +1,6 @@
 builders:
   to_string:
-    import: "package:to_string/builder.dart"
+    import: "package:to_string_builder/builder.dart"
     builder_factories: ["toStringBuilder"]
     # The `partId` argument to `SharedPartBuilder` is "some_cool_builder"
     build_extensions: {".dart": [".to_string.g.part"]}

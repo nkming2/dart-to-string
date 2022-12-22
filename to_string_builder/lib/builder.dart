@@ -1,6 +1,6 @@
 import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
-import 'package:to_string/src/generator.dart';
+import 'package:to_string_builder/src/generator.dart';
 
 Builder toStringBuilder(BuilderOptions options) => SharedPartBuilder([
       ToStringGenerator(
