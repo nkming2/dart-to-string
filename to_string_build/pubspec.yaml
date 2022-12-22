@@ -13,7 +13,9 @@ dependencies:
   collection: '>=1.15.0 <2.0.0'
   source_gen: ^1.2.6
   to_string:
-    path: ../to_string
+    git:
+      url: https://gitlab.com/nkming2/dart-to-string
+      path: to_string
 
 dev_dependencies:
   build_test: ^2.1.5
