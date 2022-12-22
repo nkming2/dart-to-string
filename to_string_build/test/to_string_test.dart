@@ -1,6 +1,6 @@
 import 'package:code_gen_tester/code_gen_tester.dart';
 import 'package:test/test.dart';
-import 'package:to_string_builder/src/generator.dart';
+import 'package:to_string_build/src/generator.dart';
 
 void main() {
   final tester = SourceGenTester.fromPath("test/src/to_string.dart");

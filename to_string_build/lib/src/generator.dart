@@ -4,7 +4,7 @@ import 'package:build/build.dart';
 import 'package:collection/collection.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:to_string/to_string.dart';
-import 'package:to_string_builder/src/util.dart';
+import 'package:to_string_build/src/util.dart';
 
 class ToStringGenerator extends GeneratorForAnnotation<ToString> {
   const ToStringGenerator({

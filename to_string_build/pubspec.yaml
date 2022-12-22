@@ -1,4 +1,4 @@
-name: to_string_builder
+name: to_string_build
 description: Generate toString()
 version: 1.0.0
 homepage: https://gitlab.com/nkming2/dart-to-string

@@ -1,7 +1,7 @@
 targets:
   $default:
     builders:
-      to_string:
+      to_string_build:
         options:
           # Map a type by name to a format string. Since the types are mapped by
           # name, this may confuse the generator if you have multiple classes
