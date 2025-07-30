@@ -1,6 +1,6 @@
 name: to_string_build
 description: Generate toString()
-version: 1.1.1
+version: 2.0.0
 homepage: https://github.com/nkming2/dart-to-string
 publish_to: none
 
@@ -15,7 +15,7 @@ dependencies:
   to_string:
     git:
       url: https://github.com/nkming2/dart-to-string.git
-      ref: to_string-1.1.0
+      ref: to_string-2.0.0
       path: to_string
 
 dev_dependencies:
