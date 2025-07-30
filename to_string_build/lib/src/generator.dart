@@ -69,7 +69,7 @@ extension _\$${clazz.name}ToString on ${clazz.name} {
   Map<String, _FieldMeta> _getFields(ClassElement clazz, ToString toString) {
     final data = <String, _FieldMeta>{};
     if (clazz.supertype?.isDartCoreObject == false) {
-      final parent = clazz.supertype!.element2;
+      final parent = clazz.supertype!.element;
       data.addAll(_getFields(parent as ClassElement, toString));
     }
     for (final f
@@ -192,7 +192,7 @@ class _FieldMetaBuilder {
           return true;
         }
       }
-      if (field.type.element2 != null) {
+      if (field.type.element != null) {
         if (TypeChecker.fromUrl(e.key).isExactlyType(field.type)) {
           return true;
         }
@@ -209,8 +209,8 @@ class _FieldMetaBuilder {
           return true;
         }
       }
-      if (field.type.element2 != null) {
-        if (field.type.element2!.name == e.key) {
+      if (field.type.element != null) {
+        if (field.type.element!.name == e.key) {
           return true;
         }
       } else {
@@ -225,7 +225,7 @@ class _FieldMetaBuilder {
       return formatString;
     }
 
-    if (configUseEnumName == true && field.type.element2 is EnumElement) {
+    if (configUseEnumName == true && field.type.element is EnumElement) {
       return r"${$?.name}";
     }
 
